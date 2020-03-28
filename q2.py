@@ -1,19 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-class Point:
-    def __init__(self,x,y):
-        self.x=x
-        self.y=y
-
-    def __lt__(self, other):
-      return self.x < other.x
-
-    def __repr__(self):
-      return '(%.1f,%.1f)' %(self.x,self.y)
-
-    def __str__(self):
-      return '(%.1f,%.1f)' %(self.x,self.y)
+# import Point.py class
+from Point import Point
 
 allPoints = list()
 
@@ -23,6 +12,7 @@ allPoints.append(Point(3.5,6))
 allPoints.append(Point(6,1))
 allPoints.append(Point(9,0))
 '''
+
 #np.random.seed(1921)
 for i in range(20):
   allPoints.append(Point(100*np.random.rand(),100*np.random.rand()))
@@ -35,6 +25,15 @@ def isLeftOf(p,a,b):
 # Returns true if point p is right of the line ab
 def isRightOf(p,a,b):
   return (np.sign((b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x)) <= 0 )
+
+# Returns true if the point p is upper tangent of point p.
+# q1 is the previous point of p and q2 is the next point, when moving CCW in a polygon
+def isUpperTangent(p, q, q1, q2):
+  return isLeftOf(p,q,q2) and isRightOf(p,q1,q)
+
+def isLowerTangent(p, q, q1, q2):
+  return isRightOf(p,q,q2) and isLeftOf(p,q1,q)
+
 
 # Sort points by their x-coordinate
 allPoints = sorted(allPoints)
@@ -60,23 +59,15 @@ else:
       hullPoints[1]: {'prev': hullPoints[0], 'next': hullPoints[2]}
   }
 
-print('----')
-print(hullEdge)
-
-# Returns true if the point p is upper tangent of point p.
-# q1 is the previous point of p and q2 is the next point, when moving CCW in a polygon
-def isUpperTangent(p, q, q1, q2):
-  return isLeftOf(p,q,q2) and isRightOf(p,q1,q)
-
-def isLowerTangent(p, q, q1, q2):
-  return isRightOf(p,q,q2) and isLeftOf(p,q1,q)
-
 n = len(allPoints)
 
+# One by one add the remaining vertices to the convex hull
+# and remove vertices that are inside it
 for i in range(3,n):
   pi = allPoints[i]
   print('Adding point pi=%s'%(pi))
-  # j is the rightmost index of the convex hull
+
+  # Let j be the rightmost index of the convex hull
   j = len(hullPoints) - 1
 
   # Look for upper tangent point
@@ -88,7 +79,8 @@ for i in range(3,n):
     upperTangent = hullPoints[u]
   print('  Upper tangent point: %s' %(upperTangent))
 
-  # Look for lower tangent point
+  # Look for lower tangent point by iterating over the vertices that are 
+  # previous of upperTangent, one by one until it is found
   lowerTangent = hullEdge[upperTangent]['prev']
   while(not isLowerTangent(pi, lowerTangent, hullEdge[lowerTangent]['prev'], hullEdge[lowerTangent]['next'])):
       print('     Removing %s' %(lowerTangent))
@@ -100,28 +92,31 @@ for i in range(3,n):
 
   # Update convex hull by adding the new point
   hullPoints.append(pi)
+
+  # Update edges
   hullEdge[pi] = {'prev': lowerTangent, 'next': upperTangent}
   hullEdge[lowerTangent]['next'] = pi
   hullEdge[upperTangent]['prev'] = pi
   print('')
 
 print('Generating plot...')
+# Convert points and edges into a np.arrays in order to plot them
 pointsArray = list()
 for point in allPoints:
   pointsArray.append([point.x, point.y])
 pointsArray = np.array(pointsArray)
 
 hullEdge[pi] = {'prev': lowerTangent, 'next': upperTangent}
-hull = list()
+hullArray = list()
 point = hullPoints[0]
 for i in range(len(hullPoints)):
-  hull.append([point.x, point.y])
+  hullArray.append([point.x, point.y])
   point = hullEdge[point]['next']
-hull.append(hull[0])
-hull = np.array(hull)
+hullArray.append(hullArray[0])
+hullArray = np.array(hullArray)
 
 plt.plot(pointsArray[:,0], pointsArray[:,1], 'o')
-plt.plot(hull[:,0], hull[:,1], 'r--')
+plt.plot(hullArray[:,0], hullArray[:,1], 'r--')
 
 plt.show()
 print('Plot was generated')

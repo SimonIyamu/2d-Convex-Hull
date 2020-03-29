@@ -4,20 +4,6 @@ import numpy as np
 # import Point.py class
 from Point import Point
 
-allPoints = list()
-
-'''
-allPoints.append(Point(3,9))
-allPoints.append(Point(3.5,6))
-allPoints.append(Point(6,1))
-allPoints.append(Point(9,0))
-'''
-
-#np.random.seed(1921)
-for i in range(20):
-  allPoints.append(Point(100*np.random.rand(),100*np.random.rand()))
-print(allPoints)
-
 # Returns true if point p is left of the line ab
 def isLeftOf(p,a,b):
   return (np.sign((b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x)) >= 0 )
@@ -34,6 +20,19 @@ def isUpperTangent(p, q, q1, q2):
 def isLowerTangent(p, q, q1, q2):
   return isRightOf(p,q,q2) and isLeftOf(p,q1,q)
 
+allPoints = list()
+
+'''
+allPoints.append(Point(3,9))
+allPoints.append(Point(3.5,6))
+allPoints.append(Point(6,1))
+allPoints.append(Point(9,0))
+'''
+
+#np.random.seed(1921)
+for i in range(20):
+  allPoints.append(Point(100*np.random.rand(),100*np.random.rand()))
+print(allPoints)
 
 # Sort points by their x-coordinate
 allPoints = sorted(allPoints)

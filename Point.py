@@ -3,6 +3,7 @@ class Point:
         self.x=x
         self.y=y
 
+    # in order to sort points based on their x coordinate
     def __lt__(self, other):
       return self.x < other.x
 

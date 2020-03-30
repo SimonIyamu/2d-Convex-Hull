@@ -1,3 +1,7 @@
+'''
+Find the convex hull of random points using an incremental algorithm
+'''
+
 import matplotlib.pyplot as plt
 import numpy as np
 

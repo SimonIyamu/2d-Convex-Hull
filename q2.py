@@ -29,10 +29,8 @@ allPoints.append(Point(6,1))
 allPoints.append(Point(9,0))
 '''
 
-#np.random.seed(1921)
 for i in range(20):
   allPoints.append(Point(100*np.random.rand(),100*np.random.rand()))
-print(allPoints)
 
 # Sort points by their x-coordinate
 allPoints = sorted(allPoints)
@@ -40,8 +38,6 @@ print(allPoints)
 
 # Start with a trivial hull(a triangle of the first points)
 hullPoints = allPoints[:3]
-print('----')
-print(hullPoints)
 
 # Store edges in CCW (counter-clock wise) order 
 hullEdge = {}
